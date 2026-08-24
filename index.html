@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>For You</title>
+
+  <style>
+    :root{
+      --bg: #ffffff;
+      --ink: #14121a;
+      --muted: #5b5566;
+      --card: rgba(255,255,255,0.78);
+      --stroke: rgba(120, 70, 180, 0.18);
+      --purple: #7a3fd6;
+      --blue: #2a7de1;
+      --shadow: 0 20px 60px rgba(20, 18, 26, 0.10);
+      --radius: 22px;
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--ink);
+      background: var(--bg);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    /* floral background (soft, abstract “flowers”) */
+    .bg{
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      z-index: 0;
+      background:
+        radial-gradient(220px 220px at 12% 18%, rgba(122,63,214,0.12) 0%, rgba(122,63,214,0.00) 60%),
+        radial-gradient(260px 260px at 85% 20%, rgba(42,125,225,0.12) 0%, rgba(42,125,225,0.00) 60%),
+        radial-gradient(300px 300px at 75% 85%, rgba(122,63,214,0.10) 0%, rgba(122,63,214,0.00) 62%),
+        radial-gradient(260px 260px at 18% 85%, rgba(42,125,225,0.10) 0%, rgba(42,125,225,0.00) 60%),
+        linear-gradient(180deg, #ffffff 0%, #fbf9ff 45%, #ffffff 100%);
+    }
+
+    .petal{
+      position:absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      filter: blur(0.2px);
+      opacity: 0.75;
+      transform: rotate(18deg);
+      background:
+        radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.2) 35%, rgba(255,255,255,0) 60%),
+        radial-gradient(circle at 60% 60%, rgba(122,63,214,0.20) 0%, rgba(42,125,225,0.14) 38%, rgba(255,255,255,0) 65%);
+      border: 1px solid rgba(122,63,214,0.10);
+      box-shadow: 0 12px 40px rgba(122,63,214,0.08);
+    }
+    .p1{ left:-70px; top:80px; }
+    .p2{ right:-90px; top:140px; transform: rotate(-22deg); width:260px; height:260px; }
+    .p3{ left:18%; bottom:-120px; transform: rotate(10deg); width:320px; height:320px; }
+    .p4{ right:14%; bottom:-140px; transform: rotate(-8deg); width:360px; height:360px; }
+
+    .wrap{
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 18px 64px;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      padding: 26px;
+    }
+
+    header{
+      margin-bottom: 18px;
+    }
+    .title{
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.05;
+      margin: 0 0 8px 0;
+      letter-spacing: -0.02em;
+    }
+    .subtitle{
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+    @media (max-width: 800px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .section h2{
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(20,18,26,0.78);
+    }
+
+    .note{
+      font-size: 18px;
+      line-height: 1.6;
+      margin: 0;
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px dashed rgba(42,125,225,0.30);
+      background: rgba(255,255,255,0.55);
+    }
+
+    .footer{
+      margin-top: 18px;
+      text-align:center;
+      color: rgba(91,85,102,0.85);
+      font-size: 13px;
+    }
+    .heart{
+      background: linear-gradient(90deg, var(--purple), var(--blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 700;
+    }
+
+    /* Password gate */
+    .gate{
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      z-index: 5;
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(14px);
+    }
+    .gateBox{
+      width: min(520px, 100%);
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(122,63,214,0.18);
+      box-shadow: 0 25px 80px rgba(20, 18, 26, 0.16);
+    }
+    .gateTitle{
+      margin: 0 0 10px 0;
+      font-size: 22px;
+      letter-spacing:-0.02em;
+    }
+    .gateText{
+      margin: 0 0 14px 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height:1.5;
+    }
+    .row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+    }
+    input[type="password"]{
+      flex:1;
+      border-radius: 14px;
+      padding: 12px 12px;
+      border: 1px solid rgba(42,125,225,0.22);
+      outline: none;
+      font-size: 16px;
+      background: rgba(255,255,255,0.9);
+    }
+    button{
+      border: none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 16px;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(90deg, var(--purple), var(--blue));
+      box-shadow: 0 12px 30px rgba(42,125,225,0.18);
+    }
+    .error{
+      margin-top: 10px;
+      font-size: 13px;
+      color: #b42318;
+      display:none;
+    }
+
+    /* Spotify embed */
+    .embed{
+      border-radius: 18px;
+      overflow:hidden;
+      border: 1px solid rgba(122,63,214,0.16);
+      background: rgba(255,255,255,0.7);
+    }
+    iframe{ display:block; width:100%; height: 152px; border:0; }
+    .hint{
+      margin-top:10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg">
+    <div class="petal p1"></div>
+    <div class="petal p2"></div>
+    <div class="petal p3"></div>
+    <div class="petal p4"></div>
+  </div>
+
+  <!-- Password gate -->
+  <div class="gate" id="gate">
+    <div class="gateBox">
+      <h1 class="gateTitle">Private page</h1>
+      <p class="gateText">Şifreyi girince sayfa açılacak.</p>
+      <div class="row">
+        <input id="pw" type="password" placeholder="Password" autocomplete="off" />
+        <button id="unlock">Open</button>
+      </div>
+      <div class="error" id="err">Wrong password.</div>
+      <p class="gateText" style="margin-top:12px;">
+        Not: Bu şifre koruması “basit”tir (kod bilen biri görebilir). Daha güçlü koruma istersen söyle, gerçek girişli bir çözüm önereyim.
+      </p>
+    </div>
+  </div>
+
+  <main class="wrap" id="content" style="display:none;">
+    <div class="card">
+      <header>
+        <h1 class="title">For you</h1>
+        <p class="subtitle">A small song + note, made for you.</p>
+      </header>
+
+      <div class="grid">
+        <section class="section">
+          <h2>Song</h2>
+          <div class="embed">
+            <!-- Spotify Embed -->
+            <iframe
+              src="https://open.spotify.com/embed/track/52f1HPIlu0mxz5K1mwlXvG"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+              title="Spotify track">
+            </iframe>
+          </div>
+          <div class="hint">Play it when you read the note.</div>
+        </section>
+
+        <section class="section">
+          <h2>Note</h2>
+          <p class="note">
+            Seni kırmak sinirlendirmek istememiştim özür dilerim kadınım❤️
+          </p>
+        </section>
+      </div>
+
+      <div class="footer">
+        Made with <span class="heart">love</span>.
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Password is: muafık
+    // Simple client-side gate (not strong security).
+    const CORRECT = "muafık";
+
+    const gate = document.getElementById("gate");
+    const content = document.getElementById("content");
+    const pw = document.getElementById("pw");
+    const unlock = document.getElementById("unlock");
+    const err = document.getElementById("err");
+
+    function tryUnlock(){
+      if((pw.value || "").trim() === CORRECT){
+        gate.style.display = "none";
+        content.style.display = "block";
+      }else{
+        err.style.display = "block";
+        pw.focus();
+        pw.select();
+      }
+    }
+
+    unlock.addEventListener("click", tryUnlock);
+    pw.addEventListener("keydown", (e) => {
+      if(e.key === "Enter") tryUnlock();
+    });
+
+    // Autofocus
+    pw.focus();
+  </script>
+</body>
+</html>
